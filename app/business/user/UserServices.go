@@ -5,6 +5,7 @@ import (
 
 	"github.com/afrizal423/go-gin-secure-newbie/app/models"
 	"github.com/afrizal423/go-gin-secure-newbie/pkg/utils/hash"
+	tokenjwt "github.com/afrizal423/go-gin-secure-newbie/pkg/utils/tokenJWT"
 )
 
 type UserService struct {
@@ -45,7 +46,8 @@ func (u *UserService) Login(data models.User) (string, error) {
 
 	if match {
 		// bener
-		return "ini jwt token", nil
+		token, _ := tokenjwt.GenerateToken(dt.ID, dt.Email, dt.Role)
+		return token, nil
 	} else {
 		// salah
 		return "", errors.New("password salah")

@@ -22,7 +22,7 @@ func (u *UserRepository) FindByEmail(email string) (*models.User, error) {
 	// if err := u.db.Select("email", "password").Where("email = ?", email).Take(&user).Error; err == nil {
 	// 	return nil, errors.New("tidak ada ada")
 	// }
-	if err := u.db.Select("email", "password").First(&user, "email = ?", email).Error; err != nil {
+	if err := u.db.Select("email", "password", "role").First(&user, "email = ?", email).Error; err != nil {
 		return nil, errors.New("tidak ada data")
 	}
 	return &user, nil

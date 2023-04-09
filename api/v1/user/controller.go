@@ -54,7 +54,6 @@ func (c *Controller) Login(ctx *gin.Context) {
 		ctx.JSON(restErr.ErrStatus, restErr)
 		return
 	}
-	fmt.Println(user)
 	token, err := c.service.Login(user)
 	if err != nil {
 		ctx.JSON(http.StatusUnauthorized, gin.H{
