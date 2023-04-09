@@ -20,6 +20,9 @@ func Route(productHandler *product.Controller,
 	{
 		produkRouter.Use(middlewares.Authentication())
 		produkRouter.GET("/", productHandler.GetAllProducts)
+		produkRouter.POST("/", middlewares.CreateProductAuthorizations(), productHandler.CreateProduct)
+		produkRouter.GET("/:productId", middlewares.DetailDataProductAuthorizations(), productHandler.GetProduct)
+
 	}
 	return r
 }
