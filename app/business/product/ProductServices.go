@@ -7,7 +7,7 @@ import (
 )
 
 type ProductService struct {
-	repository IProductRepository
+	Repository IProductRepository
 }
 
 func NewProductService(repository IProductRepository) *ProductService {
@@ -17,7 +17,7 @@ func NewProductService(repository IProductRepository) *ProductService {
 }
 
 func (u *ProductService) GetAll() ([]models.Product, error) {
-	if products, err := u.repository.GetAll(); err != nil {
+	if products, err := u.Repository.GetAll(); err != nil {
 		log.Println("Data not found")
 		return products, err
 	} else {
@@ -26,7 +26,7 @@ func (u *ProductService) GetAll() ([]models.Product, error) {
 }
 
 func (u *ProductService) GetAllByUserId(userID uint) ([]models.Product, error) {
-	if products, err := u.repository.GetAllByUserId(userID); err != nil {
+	if products, err := u.Repository.GetAllByUserId(userID); err != nil {
 		log.Println("Data not found")
 		return products, err
 	} else {
@@ -35,7 +35,7 @@ func (u *ProductService) GetAllByUserId(userID uint) ([]models.Product, error) {
 }
 
 func (u *ProductService) GetDataById(id uint) (models.Product, error) {
-	if products, err := u.repository.GetDataById(id); err != nil {
+	if products, err := u.Repository.GetDataById(id); err != nil {
 		log.Println("failed to create product")
 		return products, err
 	} else {
@@ -44,7 +44,7 @@ func (u *ProductService) GetDataById(id uint) (models.Product, error) {
 }
 
 func (u *ProductService) GetDataByUserId(userID uint, id uint) (models.Product, error) {
-	if products, err := u.repository.GetDataByUserId(userID, id); err != nil {
+	if products, err := u.Repository.GetDataByUserId(userID, id); err != nil {
 		log.Println("failed to create product")
 		return products, err
 	} else {
@@ -53,7 +53,7 @@ func (u *ProductService) GetDataByUserId(userID uint, id uint) (models.Product, 
 }
 
 func (u *ProductService) CreateProduct(product models.Product, userID uint) (models.Product, error) {
-	if products, err := u.repository.CreateProduct(product, userID); err != nil {
+	if products, err := u.Repository.CreateProduct(product, userID); err != nil {
 		log.Println("failed to create product")
 		return products, err
 	} else {
@@ -62,7 +62,7 @@ func (u *ProductService) CreateProduct(product models.Product, userID uint) (mod
 }
 
 func (u *ProductService) DeleteProduct(id uint) (models.Product, error) {
-	if products, err := u.repository.DeleteProduct(id); err != nil {
+	if products, err := u.Repository.DeleteProduct(id); err != nil {
 		log.Println("failed to delete product")
 		return products, err
 	} else {
@@ -71,7 +71,7 @@ func (u *ProductService) DeleteProduct(id uint) (models.Product, error) {
 }
 
 func (u *ProductService) UpdateProduct(product models.Product, id uint) (models.Product, error) {
-	if product, err := u.repository.UpdateProduct(product, id); err != nil {
+	if product, err := u.Repository.UpdateProduct(product, id); err != nil {
 		log.Println("Failed to update product")
 		return product, err
 	} else {
