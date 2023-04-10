@@ -60,3 +60,21 @@ func (u *ProductService) CreateProduct(product models.Product, userID uint) (mod
 		return products, nil
 	}
 }
+
+func (u *ProductService) DeleteProduct(id uint) (models.Product, error) {
+	if products, err := u.repository.DeleteProduct(id); err != nil {
+		log.Println("failed to delete product")
+		return products, err
+	} else {
+		return products, nil
+	}
+}
+
+func (u *ProductService) UpdateProduct(product models.Product, id uint) (models.Product, error) {
+	if product, err := u.repository.UpdateProduct(product, id); err != nil {
+		log.Println("Failed to update product")
+		return product, err
+	} else {
+		return product, nil
+	}
+}

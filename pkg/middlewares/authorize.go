@@ -36,7 +36,7 @@ func DetailDataProductAuthorizations() gin.HandlerFunc {
 		productId := c.Param("productId")
 		product := models.Product{}
 
-		err := db.Select("user_id").Where("user_id = ? AND id = ?", userID, productId).Order("id desc").First(&product).Error
+		err := db.Select("user_id").Where("id = ?", productId).Order("id desc").First(&product).Error
 		if err != nil {
 			c.AbortWithStatusJSON(http.StatusNotFound, gin.H{
 				"error":   "Data Not Found",
@@ -57,27 +57,15 @@ func DetailDataProductAuthorizations() gin.HandlerFunc {
 	}
 }
 
-func UpdateProductAuthorizations() gin.HandlerFunc {
+func DeleteDataProductAuthorizations() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		db := configs.GormPostgresConn()
 		userData := c.MustGet("userData").(jwt.MapClaims)
-		userID := uint(userData["user_id"].(float64))
 		roles := uint(userData["roles"].(float64))
+		productId := c.Param("productId")
 		product := models.Product{}
 
-		// if roles == 1 {
-		// 	result := db.Order("id desc").First(&product)
-		// 	if result.RowsAffected == 0 {
-		// 		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{
-		// 			"error":   "Data Not Found",
-		// 			"message": fmt.Sprintln("There is no data"),
-		// 		})
-		// 		return
-		// 	}
-		// } else {
-		err := db.Select("user_id").Where("user_id = ?", userID).Order("id desc").First(&product).Error
-		// result := db.Where("user_id = ?", userID).Order("id desc").First(&product)
-		// if result.RowsAffected == 0 {
+		err := db.Select("user_id").Where("id = ?", productId).Order("id desc").First(&product).Error
 		if err != nil {
 			c.AbortWithStatusJSON(http.StatusNotFound, gin.H{
 				"error":   "Data Not Found",
@@ -85,10 +73,38 @@ func UpdateProductAuthorizations() gin.HandlerFunc {
 			})
 			return
 		}
-		// }
 
-		// jika bukan admin dan harus produk userid memiliki userid yang sama
-		if roles != 1 && product.UserID != userID {
+		// harus admin yang bisa delete produk
+		if roles != 1 {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+				"error":   "Unauthorized",
+				"message": "You are not allowed to access this data",
+			})
+			return
+		}
+		c.Next()
+	}
+}
+
+func UpdateProductAuthorizations() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		db := configs.GormPostgresConn()
+		userData := c.MustGet("userData").(jwt.MapClaims)
+		roles := uint(userData["roles"].(float64))
+		productId := c.Param("productId")
+		product := models.Product{}
+
+		err := db.Select("user_id").Where("id = ?", productId).Order("id desc").First(&product).Error
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusNotFound, gin.H{
+				"error":   "Data Not Found",
+				"message": fmt.Sprintln("There is no data"),
+			})
+			return
+		}
+
+		// harus admin yang bisa update produk
+		if roles != 1 {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 				"error":   "Unauthorized",
 				"message": "You are not allowed to access this data",

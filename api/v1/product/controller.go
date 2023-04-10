@@ -120,3 +120,53 @@ func (handler *Controller) CreateProduct(c *gin.Context) {
 		return
 	}
 }
+
+func (handler *Controller) UpdateProduct(c *gin.Context) {
+	product := models.Product{}
+	productId, err := strconv.Atoi(c.Param("productId"))
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"error":   "Bad Request",
+			"message": "invalid product ID",
+		})
+		return
+	}
+	if err := c.ShouldBindJSON(&product); err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"error":   "Bad Request",
+			"message": err.Error(),
+		})
+		return
+	}
+	if res, err := handler.service.UpdateProduct(product, uint(productId)); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error":   "Bad Request",
+			"message": err.Error(),
+		})
+	} else {
+		c.JSON(http.StatusOK, res)
+	}
+}
+
+func (handler *Controller) DeleteProduct(c *gin.Context) {
+	productId, err := strconv.Atoi(c.Param("productId"))
+	if err != nil || uint(productId) == 0 {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"error":   "Bad Request",
+			"message": "invalid product ID",
+		})
+		return
+	}
+
+	if _, err := handler.service.DeleteProduct(uint(productId)); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"error":   "Internal Server Error",
+			"message": "Failed to delete product",
+		})
+		return
+	} else {
+		c.JSON(http.StatusOK, gin.H{
+			"message": "Product deleted successfully",
+		})
+	}
+}

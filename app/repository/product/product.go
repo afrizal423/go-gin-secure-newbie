@@ -61,3 +61,22 @@ func (u *ProductRepository) CreateProduct(product models.Product, userID uint) (
 	}
 	return product, nil
 }
+
+func (u *ProductRepository) DeleteProduct(id uint) (models.Product, error) {
+	product := models.Product{}
+	if err := u.db.Where("id = ?", id).Delete(&product).Error; err != nil {
+		log.Println("Error delete product:", err)
+		return product, err
+	}
+	return product, nil
+}
+
+func (u *ProductRepository) UpdateProduct(product models.Product, id uint) (models.Product, error) {
+	if err := u.db.Model(&product).Where("id = ?", id).Updates(models.Product{Title: product.Title, Description: product.Description}).Error; err != nil {
+		log.Println("Error updating product:", err)
+		return product, err
+	}
+	// ambil data setelah update
+	u.db.Where("id = ?", id).First(&product)
+	return product, nil
+}
